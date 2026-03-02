@@ -2,8 +2,24 @@
 Evaluate compression ratio of the tokenizer.
 """
 
-from nanochat.tokenizer import get_tokenizer, RustBPETokenizer
+import argparse
+import os
+
+from nanochat.tokenizer import HuggingFaceTokenizer, RustBPETokenizer
+from nanochat.common import get_base_dir
 from nanochat.dataset import parquets_iter_batched
+
+parser = argparse.ArgumentParser(description='Evaluate tokenizer compression')
+parser.add_argument('--tokenizer-backend', type=str, default='huggingface', choices=['huggingface', 'rustbpe'],
+                    help='Tokenizer backend used for "ours" tokenizer')
+args = parser.parse_args()
+
+def load_ours_tokenizer():
+    base_dir = get_base_dir()
+    tokenizer_dir = os.path.join(base_dir, "tokenizer")
+    if args.tokenizer_backend == "huggingface":
+        return HuggingFaceTokenizer.from_directory(tokenizer_dir)
+    return RustBPETokenizer.from_directory(tokenizer_dir)
 
 # Random text I got from a random website this morning
 news_text = r"""
@@ -171,7 +187,7 @@ for tokenizer_name in ["gpt2", "gpt4", "ours"]:
     elif tokenizer_name == "gpt4":
         tokenizer = RustBPETokenizer.from_pretrained("cl100k_base") # gpt-4 base model tokenizer
     else:
-        tokenizer = get_tokenizer()
+        tokenizer = load_ours_tokenizer()
 
     vocab_sizes[tokenizer_name] = tokenizer.get_vocab_size()
     tokenizer_results[tokenizer_name] = {}

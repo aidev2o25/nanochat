@@ -6,7 +6,7 @@ import os
 import time
 import argparse
 import torch
-from nanochat.tokenizer import RustBPETokenizer
+from nanochat.tokenizer import HuggingFaceTokenizer, RustBPETokenizer
 from nanochat.common import get_base_dir
 from nanochat.dataset import parquets_iter_batched
 
@@ -17,10 +17,13 @@ parser = argparse.ArgumentParser(description='Train a BPE tokenizer')
 parser.add_argument('--max-chars', type=int, default=2_000_000_000, help='Maximum characters to train on (default: 10B)')
 parser.add_argument('--doc-cap', type=int, default=10_000, help='Maximum characters per document (default: 10,000)')
 parser.add_argument('--vocab-size', type=int, default=32768, help='Vocabulary size (default: 32768 = 2^15)')
+parser.add_argument('--tokenizer-backend', type=str, default='huggingface', choices=['huggingface', 'rustbpe'],
+                    help='Tokenizer backend to train and save')
 args = parser.parse_args()
 print(f"max_chars: {args.max_chars:,}")
 print(f"doc_cap: {args.doc_cap:,}")
 print(f"vocab_size: {args.vocab_size:,}")
+print(f"tokenizer_backend: {args.tokenizer_backend}")
 
 # -----------------------------------------------------------------------------
 # Text iterator
@@ -46,7 +49,10 @@ text_iter = text_iterator()
 # -----------------------------------------------------------------------------
 # Train the tokenizer
 t0 = time.time()
-tokenizer = RustBPETokenizer.train_from_iterator(text_iter, args.vocab_size)
+if args.tokenizer_backend == "huggingface":
+    tokenizer = HuggingFaceTokenizer.train_from_iterator(text_iter, args.vocab_size)
+else:
+    tokenizer = RustBPETokenizer.train_from_iterator(text_iter, args.vocab_size)
 t1 = time.time()
 train_time = t1 - t0
 print(f"Training time: {train_time:.2f}s")

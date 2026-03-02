@@ -1,0 +1,138 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug: Base Train (minimal)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "scripts.base_train",
+      "args": [
+        "--depth=4",
+        "--max-seq-len=512",
+        "--device-batch-size=1",
+        "--total-batch-size=512",
+        "--num-iterations=20",
+        "--eval-every=-1",
+        "--core-metric-every=-1",
+        "--save-every=-1"
+      ],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "NANOCHAT_BASE_DIR": "${workspaceFolder}/.nanochat_debug"
+      },
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Debug: Mid Train (minimal)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "scripts.mid_train",
+      "args": [
+        "--device-batch-size=2",
+        "--max-seq-len=512",
+        "--total-batch-size=1024",
+        "--num-iterations=10",
+        "--eval-every=-1"
+      ],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "NANOCHAT_BASE_DIR": "${workspaceFolder}/.nanochat_debug"
+      },
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Debug: Chat SFT (minimal)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "scripts.chat_sft",
+      "args": [
+        "--source=mid",
+        "--device-batch-size=2",
+        "--num-iterations=5",
+        "--eval-every=-1",
+        "--eval-metrics-every=-1"
+      ],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "NANOCHAT_BASE_DIR": "${workspaceFolder}/.nanochat_debug"
+      },
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Debug: Tokenizer Train (minimal)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "scripts.tok_train",
+      "args": [
+        "--max-chars=500000",
+        "--vocab-size=4096",
+        "--doc-cap=5000"
+      ],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "NANOCHAT_BASE_DIR": "${workspaceFolder}/.nanochat_debug"
+      },
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Debug: Base Eval",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "scripts.base_eval",
+      "args": [
+        "--max-per-task=10"
+      ],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "NANOCHAT_BASE_DIR": "${workspaceFolder}/.nanochat_debug"
+      },
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Debug: Report Generate",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "nanochat.report",
+      "args": ["generate"],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "NANOCHAT_BASE_DIR": "${workspaceFolder}/.nanochat_debug"
+      },
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Debug: Pytest (tests)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": [
+        "tests/",
+        "-v",
+        "-s",
+        "--tb=short"
+      ],
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Debug: Current File",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}",
+        "NANOCHAT_BASE_DIR": "${workspaceFolder}/.nanochat_debug"
+      },
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    }
+  ]
+}
